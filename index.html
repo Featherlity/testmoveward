@@ -357,7 +357,7 @@
   // ═══════════════════════════════════════════════
   // CONFIG — แก้ตรงนี้หลัง deploy Apps Script แล้ว
   // ═══════════════════════════════════════════════
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyp96UR1JYXbRXtpxUSYf4bohn5bMIlI6EMezdFBmEv39FtdG8H1F9aHW-JTnSn2A1M/exec';
+  const API_URL = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
 
   // ═══════════════════════════════════════════════
   let selectedPatient = null;
@@ -403,26 +403,18 @@
 
   function renderPatientList(patients) {
     const html = patients.map(p => {
-      const initials  = (p.name || '?').slice(0, 2);
       const wardNow   = p.currentWard || p.wardInitial || '-';
       const isUpdated = !!p.currentWard;
       return `
-        <div class="patient-card" id="pc-${p.hn}" onclick="selectPatient(${JSON.stringify(p).replace(/"/g, '&quot;')})">
-          <div class="patient-avatar">${initials}</div>
+        <div class="patient-card" id="pc-${p.an}" onclick="selectPatient(${JSON.stringify(p).replace(/"/g, '&quot;')})">
           <div class="patient-info">
-            <div class="patient-name">${p.name}</div>
-            <div class="patient-meta">
-              <span>HN: <span class="patient-hn">${p.hn}</span></span>
-              <span>AN: <span class="patient-hn">${p.an}</span></span>
-              <span>${p.gender || ''} | อายุ ${p.age || '-'}</span>
-              <span>Admit: ${formatDate(p.admitDate)}</span>
-            </div>
+            <div class="patient-name" style="font-family:var(--mono)">AN: ${p.an}</div>
+            ${isUpdated ? `<div style="font-size:11px;color:var(--text-2);margin-top:4px">อัปเดตล่าสุด ${p.updatedAt} โดย ${p.updatedBy}</div>` : ''}
           </div>
           <div>
             <div class="ward-badge ${isUpdated ? 'current' : 'initial'}">
               ${isUpdated ? '📍' : '🏥'} ${wardNow}
             </div>
-            ${isUpdated ? `<div style="font-size:10px;color:var(--text-2);text-align:right;margin-top:4px">อัปเดต ${p.updatedAt}</div>` : ''}
           </div>
         </div>`;
     }).join('');
@@ -437,16 +429,16 @@
 
     // Highlight selected card
     document.querySelectorAll('.patient-card').forEach(c => c.classList.remove('selected'));
-    const card = document.getElementById(`pc-${p.hn}`);
+    const card = document.getElementById(`pc-${p.an}`);
     if (card) card.classList.add('selected');
 
     // Fill banner
     const wardNow = p.currentWard || p.wardInitial || '-';
     document.getElementById('patientBanner').innerHTML = `
-      <div class="patient-avatar" style="background:var(--teal)">${p.name.slice(0,2)}</div>
+      <div class="patient-avatar" style="background:var(--teal); font-size:13px; font-family:var(--mono)">AN</div>
       <div>
-        <div class="banner-name">${p.name}</div>
-        <div class="banner-meta">HN: ${p.hn} | AN: ${p.an} | Ward เริ่มต้น: ${p.wardInitial || '-'}</div>
+        <div class="banner-name" style="font-family:var(--mono)">${p.an}</div>
+        <div class="banner-meta">Ward ปัจจุบัน: ${wardNow}</div>
       </div>
     `;
 
