@@ -357,7 +357,7 @@
   // ═══════════════════════════════════════════════
   // CONFIG — แก้ตรงนี้หลัง deploy Apps Script แล้ว
   // ═══════════════════════════════════════════════
-  const API_URL = 'https://script.google.com/macros/s/AKfycby28wnCAM_zErbVWi3bMmGxonJ81-NsIrNEU8yuwz27Ck8ft8rgtDmWDI6jJdpPcRkc/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxF0gyBhgzyqbqJV8mBP4dEKwIFtdHrT8k3kjEO_1XeDm11qMAmu4avDxnVwmF9XRKj/exec';
 
   // ═══════════════════════════════════════════════
   let selectedPatient = null;
@@ -481,10 +481,14 @@
     btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...';
 
     try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        body  : JSON.stringify({ hn: selectedPatient.hn, an: selectedPatient.an, newWard, updatedBy }),
+      const params = new URLSearchParams({
+        action    : 'update',
+        hn        : selectedPatient.hn,
+        an        : selectedPatient.an,
+        newWard,
+        updatedBy,
       });
+      const res = await fetch(`${API_URL}?${params}`);
       const data = await res.json();
 
       if (data.success) {
