@@ -357,7 +357,7 @@
   // ═══════════════════════════════════════════════
   // CONFIG — แก้ตรงนี้หลัง deploy Apps Script แล้ว
   // ═══════════════════════════════════════════════
-  const API_URL = 'https://script.google.com/macros/s/AKfycbwTJVPiFlJ-QQSsu53htWVH4_wmF8Uzx1xPa1pKojRirFist0kBfbzzgsdkko1Ax04K/exec';
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyp96UR1JYXbRXtpxUSYf4bohn5bMIlI6EMezdFBmEv39FtdG8H1F9aHW-JTnSn2A1M/exec';
 
   // ═══════════════════════════════════════════════
   let selectedPatient = null;
@@ -491,7 +491,7 @@
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
-        body  : JSON.stringify({ hn: selectedPatient.hn, newWard, updatedBy }),
+        body  : JSON.stringify({ hn: selectedPatient.hn, an: selectedPatient.an, newWard, updatedBy }),
       });
       const data = await res.json();
 
@@ -519,7 +519,7 @@
     el.innerHTML = `<div class="loading"><div class="spinner"></div>กำลังโหลดประวัติ...</div>`;
 
     try {
-      const res  = await fetch(`${API_URL}?action=log&hn=${encodeURIComponent(selectedPatient.hn)}`);
+      const res  = await fetch(`${API_URL}?action=log&an=${encodeURIComponent(selectedPatient.an)}`);
       const data = await res.json();
 
       if (!data.logs || data.logs.length === 0) {
