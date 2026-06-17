@@ -189,7 +189,7 @@
       <div class="logo-sub">Palliative Care Team</div>
     </div>
   </div>
-  <div class="header-title">Ward Transfer System</div>
+  <div class="header-title">SLHDMC Support System</div>
 </header>
 
 <main>
@@ -212,16 +212,17 @@
     <div class="card-body">
 
       <div class="tabs" style="margin-bottom:20px">
-        <button class="tab-btn active" id="tab1" onclick="switchTab(1)">🔄 ย้าย Ward</button>
-        <button class="tab-btn"        id="tab2" onclick="switchTab(2)">📜 ประวัติ</button>
-        <button class="tab-btn"        id="tab3" onclick="switchTab(3)">📊 KPI</button>
+        <button class="tab-btn active" id="tab3" onclick="switchTab(3)">📊 KPI</button>
         <button class="tab-btn"        id="tab4" onclick="switchTab(4)">📅 1 เดือน</button>
+        <button class="tab-btn"        id="tab1" onclick="switchTab(1)">🔄 ย้าย Ward</button>
+        <button class="tab-btn"        id="tab2" onclick="switchTab(2)">📜 ประวัติ</button>
       </div>
 
       <!-- Tab 1: Ward Transfer -->
       <div id="tabContent1">
         <div class="selected-patient-banner" id="patientBanner"></div>
-        <div class="form-grid">
+        <div id="wardLockNotice" class="filled-notice" style="display:none; background:#fef9e7; border-color:#f9e79f; color:#b9770e">🔒 ผู้ป่วยรายนี้ลง KPI (จำหน่าย) แล้ว — ไม่สามารถย้าย ward ได้</div>
+        <div class="form-grid" id="wardFormGrid">
           <div class="form-group">
             <label>Ward ปัจจุบัน</label>
             <input type="text" id="currentWardDisplay" readonly class="readonly-field" />
@@ -424,7 +425,7 @@
 
 <script>
   // ── CONFIG ────────────────────────────────────────
-  const API_URL     = 'https://script.google.com/macros/s/AKfycbxBe-I1DD9qIZ9_-5cWHbMU6HNT9iHl6YG-cYWBVHs2TcqzGvsgVNSs3yBZ5LyQuNc/exec';
+  const API_URL     = 'YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
   const ORIGIN      = window.location.origin;
   const CORRECT_PIN = '123456'; // ← เปลี่ยน PIN ที่นี่
 
@@ -507,7 +508,19 @@
     document.getElementById('saveAlert').innerHTML = '';
     document.getElementById('actionCard').style.display = '';
     document.getElementById('actionCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    switchTab(1);
+    applyWardLock(p);   // lock การย้าย ward ถ้าลง KPI แล้ว
+    switchTab(3);       // เปิดที่ KPI เป็น default
+  }
+
+  // ★ ถ้าลง KPI แล้ว (จำหน่ายแล้ว) ห้ามย้าย ward — disable form + ขึ้นข้อความ
+  function applyWardLock(p) {
+    const locked = !!p.kpiFilled;
+    document.getElementById('newWardSelect').disabled = locked;
+    document.getElementById('customWard').disabled    = locked;
+    document.getElementById('updatedByInput').disabled = locked;
+    document.getElementById('saveBtn').disabled        = locked;
+    document.getElementById('wardLockNotice').style.display = locked ? '' : 'none';
+    document.getElementById('wardFormGrid').style.opacity  = locked ? '.5' : '1';
   }
 
   function clearSelection() {
